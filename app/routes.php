@@ -1,11 +1,15 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Http\v1\Controller\ArticleController;
+use App\Http\v1\Controller\LandingController;
+
+// Version 1 of the application routing
+$app->group('/v1', function (\Slim\Routing\RouteCollectorProxy $group) {
+    $group->get('', LandingController::class . ':v1')->setName('v1-homepage');
+
+    $group->get('/articles', ArticleController::class . ':index')->setName('article-list');
+    $group->get('/articles/{id}', ArticleController::class . ':show')->setName('article-single');
+});
 
 /** @noinspection PhpUndefinedVariableInspection */
-$app->get( '/', function ( Request $request, Response $response, $args ) {
-	$response->getBody()->write( "Hello world!" );
-
-	return $response;
-} );
+$app->get('/[{path:.*}]', LandingController::class . ':index')->setName('hello-world');

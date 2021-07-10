@@ -2,12 +2,12 @@
 
 namespace Tests;
 
+use Http\Factory\Guzzle\ServerRequestFactory;
+use PHPUnit\Framework\TestCase as PHPUnit_TestCase;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\UriInterface;
 use Slim\App;
 use Slim\Factory\AppFactory;
-use Psr\Http\Message\UriInterface;
-use Http\Factory\Guzzle\ServerRequestFactory;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use PHPUnit\Framework\TestCase as PHPUnit_TestCase;
 
 /**
  * This is an example class that shows how you could set up a method that
@@ -15,9 +15,10 @@ use PHPUnit\Framework\TestCase as PHPUnit_TestCase;
  * tuned to the specifics of this skeleton app, so if your needs are
  * different, you'll need to change it.
  */
-abstract class TestCase extends PHPUnit_TestCase {
-	/** @var  App */
-	protected App $app;
+abstract class TestCase extends PHPUnit_TestCase
+{
+    /** @var  App */
+    protected App $app;
 
 	/**
 	 * Sets up the fixture, for example, open a network connection.
@@ -54,11 +55,19 @@ abstract class TestCase extends PHPUnit_TestCase {
 		return ( new ServerRequestFactory() )->createServerRequest( $method, $uri, $serverParams );
 	}
 
-	protected function createApplication() {
-		// Instantiate the application
-		$this->app = $app = AppFactory::create();
+	protected function createApplication()
+    {
+        // Instantiate the application
 
-		// Register routes
-		require dirname( __DIR__ ) . '/app/routes.php';
-	}
+        $sep = DIRECTORY_SEPARATOR;
+        $_SERVER['DB_DIR'] = __DIR__ . $sep . 'Models' . $sep;
+        $this->app = $app = AppFactory::create();
+
+        //Constants and translator
+        include_once __DIR__ . $sep . '..' . $sep . 'src' . $sep . 'System' . $sep . 'Constants.php';
+        include_once __DIR__ . $sep . '..' . $sep . 'src' . $sep . 'System' . $sep . 'Translator.php';
+
+        // Register routes
+        require dirname(__DIR__) . $sep . 'app' . $sep . 'routes.php';
+    }
 }
